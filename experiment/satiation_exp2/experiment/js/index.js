@@ -121,9 +121,9 @@ test4 = shuffle(test_4);
 test5 = shuffle(test_5);
 test6 = shuffle(test_6);
 
-//shuffled_blocks = shuffle([block_1, block_2, block_3, block_4, block_5, block_6, block_7, block_8, block_9, block_10, block_11, block_12, block_13, block_14, block_15]);
+shuffled_blocks = shuffle([block_1, block_2, block_3, block_4, block_5, block_6, block_7, block_8, block_9, block_10, block_11, block_12, block_13, block_14, block_15]);
 shuffled_tests = shuffle([test_1, test_2, test_3, test_4, test_5, test_6]);
-shuffled_blocks = shuffle([block_1]);
+//shuffled_blocks = shuffle([block_1]);
 name_list = shuffle(["Gregory", "Emily", "Jessy", "Thomas"]);
 
 for (var i = 0; i < 15; i++){
