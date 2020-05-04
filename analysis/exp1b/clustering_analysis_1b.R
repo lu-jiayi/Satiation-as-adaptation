@@ -95,13 +95,14 @@ k2 <- kmeans(df, centers = 2, nstart = 25)
 k3 <- kmeans(df, centers = 3, nstart = 25)
 k4 <- kmeans(df, centers = 4, nstart = 25)
 k5 <- kmeans(df, centers = 5, nstart = 25)
+k6 <- kmeans(df, centers = 6, nstart = 25)
 
 # plots to compare
 p1 <- fviz_cluster(k2, geom = "point", data = df) + ggtitle("k = 2")
 p2 <- fviz_cluster(k3, geom = "point",  data = df) + ggtitle("k = 3")
 p3 <- fviz_cluster(k4, geom = "point",  data = df) + ggtitle("k = 4")
 p4 <- fviz_cluster(k5, geom = "point",  data = df) + ggtitle("k = 5")
-
+p5 <- fviz_cluster(k6, geom = "point",  data = df) + ggtitle("k = 6")
 library(gridExtra)
 grid.arrange(p1, p2, p3, p4, nrow = 2)
 
@@ -155,7 +156,7 @@ theme_set(theme_pubr())
 figure <- ggarrange(c_clean1, c_clean2,
                     labels = c("Cluster A: n=57", "Cluster B: n=90"),
                     ncol = 1, nrow = 2)
-ggsave("cluster_1b.pdf", width=10, height = 12)
+ggsave("cluster_1b_2clusters.pdf", width=10, height = 12)
 
 all_vec$cluster <- k4$cluster
 cluster_1 <- subset(all_vec, cluster == 1)
@@ -186,7 +187,48 @@ theme_set(theme_pubr())
 figure4 <- ggarrange(c_clean1, c_clean2, c_clean3, c_clean4,
                      labels = c("Cluster A", "Cluster B", "Cluster C", "Cluster D"),
                      ncol = 2, nrow = 2)
-ggsave("cluster_1b_cluster4.pdf", width=10, height = 24)
+ggsave("cluster_1b_4clusters.pdf", width=10, height = 24)
+
+
+all_vec$cluster <- k6$cluster
+cluster_1 <- subset(all_vec, cluster == 1)
+cluster_2 <- subset(all_vec, cluster == 2)
+cluster_3 <- subset(all_vec, cluster == 3)
+cluster_4 <- subset(all_vec, cluster == 4)
+cluster_5 <- subset(all_vec, cluster == 5)
+cluster_6 <- subset(all_vec, cluster == 6)
+
+data_1 <- subset(data, workerid %in% cluster_1$workerid)
+data_2 <- subset(data, workerid %in% cluster_2$workerid)
+data_3 <- subset(data, workerid %in% cluster_3$workerid)
+data_4 <- subset(data, workerid %in% cluster_4$workerid)
+data_5 <- subset(data, workerid %in% cluster_5$workerid)
+data_6 <- subset(data, workerid %in% cluster_6$workerid)
+
+c_clean1 = ggplot(data_1, aes(x=trial_sequence_total, y=response, color = condition, shape = condition)) + 
+  
+  geom_smooth(method=lm, aes(fill=condition))+theme_bw()
+
+c_clean2 = ggplot(data_2, aes(x=trial_sequence_total, y=response, color = condition, shape = condition)) + 
+  
+  geom_smooth(method=lm, aes(fill=condition))+theme_bw()
+c_clean3 = ggplot(data_3, aes(x=trial_sequence_total, y=response, color = condition, shape = condition)) + 
+  
+  geom_smooth(method=lm, aes(fill=condition))+theme_bw()
+c_clean4 = ggplot(data_4, aes(x=trial_sequence_total, y=response, color = condition, shape = condition)) + 
+  
+  geom_smooth(method=lm, aes(fill=condition))+theme_bw()
+c_clean5 = ggplot(data_5, aes(x=trial_sequence_total, y=response, color = condition, shape = condition)) + 
+  
+  geom_smooth(method=lm, aes(fill=condition))+theme_bw()
+c_clean6 = ggplot(data_6, aes(x=trial_sequence_total, y=response, color = condition, shape = condition)) + 
+  
+  geom_smooth(method=lm, aes(fill=condition))+theme_bw()
+theme_set(theme_pubr())
+figure6 <- ggarrange(c_clean1, c_clean2, c_clean3, c_clean4, c_clean5, c_clean6,
+                     labels = c("Cluster A", "Cluster B", "Cluster C", "Cluster D", "Cluster E", "Cluster F"),
+                     ncol = 2, nrow = 3)
+ggsave("cluster_1b_6clusters.pdf", width=10, height = 24)
 ##CRPClustering
 # slope_vec <- all_vec_features
 # slope_vec$cnpc_intercept <- NULL
