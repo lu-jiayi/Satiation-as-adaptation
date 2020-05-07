@@ -9,7 +9,7 @@ library(tidyverse)
 library(simr)
 library(brms)
 `%notin%` <- Negate(`%in%`)
-data<-read.csv("satiation_exp2_pilot-trials.csv")
+data<-read.csv("satiation_exp2-trials.csv")
 test_cond = "CNPC"
 
 
@@ -30,7 +30,7 @@ ci.low <- function(x,na.rm=T) {
 ci.high <- function(x,na.rm=T) {
   quantile(bootstrap(1:length(x),1000,theta,x,na.rm=na.rm)$thetastar,.975,na.rm=na.rm)}
 
-filler_by_subject = aggregate(filler_data[,"response"],list(filler_data$workerid), ci.low)
+filler_by_subject = aggregate(filler_data[,"response"],list(filler_data$workerid), mean)
 ungram_by_subject = aggregate(ungram_data[,"response"],list(ungram_data$workerid), ci.high)
 
 names(filler_by_subject)[names(filler_by_subject) == "Group.1"] <- "subject"
@@ -57,7 +57,7 @@ data = subset(data, workerid %notin% non_Eng)
 
 #Step 4: exclude people who failed the attention questions
 data_attention <- subset(data, comp_question_exist == 1)
-data_attention$speaker_identity <- factor(data_attention$speaker_identity, levels = c("", "Emily", "Gregory", "Iron-Head", "Jessy", "Thomas", "/"))
+data_attention$speaker_identity <- factor(data_attention$speaker_identity, levels = c("", "Emily", "Gregory", "Iron-Head", "Jessy", "Thomas", "/", "Forgot"))
 data_attention$correct <- as.numeric(data_attention$speaker_identity == data_attention$comp_answer)
 
 agg_comp <- aggregate(data_attention[,"correct"],list(data_attention$workerid), mean)
@@ -142,3 +142,9 @@ ggplot(exposure_data, aes(x=trial_sequence_total, y=response, color = condition,
   geom_smooth(method=lm, aes(fill=condition))+facet_wrap(~workerid)
 ggsave("subject_variability_2_exposure_phase.pdf", width=20, height = 25)
 
+###
+subj = subset(test_data, island_tested =="SUBJ")
+
+cnpc = subset(test_data, island_tested =="CNPC")
+
+wh = subset(test_data, island_tested =="WH")
