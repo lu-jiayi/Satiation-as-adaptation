@@ -101,35 +101,76 @@ exposure_data <- subset(d, phase == "exposure")
 test_data <- subset(d, phase == "test")
 
 #step 7: stats
-model_test <- lmer(response~test_match_cond*condition + 
-                       (1 + condition |workerid)+(1|item_number), data = test_data)
-summary(model_test)
 
+#model_exposure <- lmer(response~trial_sequence_total*condition + 
+#                     (1 + trial_sequence_total*condition |workerid)+(1+trial_sequence_total*condition|item_number), data = test_data)
+#summary(model_exposure)
+
+#model_test <- lmer(response~test_match_cond*condition + (1 + condition |workerid)+(1+test_match_cond*condition|item_number), data = test_data)
+#summary(model_test)
 
 #step8: plot
-data_summary <- function(data, varname, groupnames){
-  require(plyr)
-  summary_func <- function(x, col){
-    c(mean = mean(x[[col]], na.rm=TRUE),
-      sd = sd(x[[col]], na.rm=TRUE))
+summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
+                      conf.interval=.95, .drop=TRUE) {
+  library(plyr)
+  
+  # New version of length which can handle NA's: if na.rm==T, don't count them
+  length2 <- function (x, na.rm=FALSE) {
+    if (na.rm) sum(!is.na(x))
+    else       length(x)
   }
-  data_sum<-ddply(data, groupnames, .fun=summary_func,
-                  varname)
-  data_sum <- rename(data_sum, c("mean" = varname))
-  return(data_sum)
+  
+  # This does the summary. For each group's data frame, return a vector with
+  # N, mean, and sd
+  datac <- ddply(data, groupvars, .drop=.drop,
+                 .fun = function(xx, col) {
+                   c(N    = length2(xx[[col]], na.rm=na.rm),
+                     mean = mean   (xx[[col]], na.rm=na.rm),
+                     sd   = sd     (xx[[col]], na.rm=na.rm)
+                   )
+                 },
+                 measurevar
+  )
+  
+  # Rename the "mean" column    
+  datac <- rename(datac, c("mean" = measurevar))
+  
+  datac$se <- datac$sd / sqrt(datac$N)  # Calculate standard error of the mean
+  
+  # Confidence interval multiplier for standard error
+  # Calculate t-statistic for confidence interval: 
+  # e.g., if conf.interval is .95, use .975 (above/below), and use df=N-1
+  ciMult <- qt(conf.interval/2 + .5, datac$N-1)
+  datac$ci <- datac$se * ciMult
+  
+  return(datac)
 }
-
-df2 <- data_summary(test_data, varname="response", 
-                    groupnames=c("condition", "test_match_cond"))
+df2 <- summarySE(test_data, measurevar="response", 
+                 groupvars=c("condition", "test_match_cond"))
 head(df2)
 
-p<- ggplot(df2, aes(x=condition, y=response, fill=test_match_cond)) + 
-  geom_bar(stat="identity", color="black", 
+agg_test <- aggregate(test_data[,"response"], by= list(test_data$workerid, test_data$condition, test_data$test_match_cond), FUN = mean, na.rm=TRUE)
+
+names(agg_test)[names(agg_test) == "Group.1"] <- "workerid"
+
+names(agg_test)[names(agg_test) == "Group.2"] <- "condition"
+
+names(agg_test)[names(agg_test) == "Group.3"] <- "test_match_cond"
+
+names(agg_test)[names(agg_test) == "x"] <- "response"
+
+p<- ggplot(agg_test, aes(x=condition, y=response, fill=test_match_cond)) + 
+  geom_bar(data = df2, stat="identity", color="black", 
            position=position_dodge()) +
-  geom_errorbar(aes(ymin=response-sd, ymax=response+sd), width=.2,
-                position=position_dodge(.9)) 
+  geom_errorbar(data = df2, aes(ymin=response-se, ymax=response+se), width=.2,
+             position=position_dodge(.9)) + theme_bw() + geom_jitter(aes(x=condition, y=response, color=test_match_cond), alpha = .4)
 
 p
+
+
+
+
+
 #overall plot:
 c= ggplot(exposure_data, aes(x=trial_sequence_total, y=response, color = condition, shape = condition)) + 
   geom_point() + 
@@ -137,10 +178,10 @@ c= ggplot(exposure_data, aes(x=trial_sequence_total, y=response, color = conditi
 
 c
 #by-subject Plot
-ggplot(exposure_data, aes(x=trial_sequence_total, y=response, color = condition, shape = condition)) + 
-  geom_point() + 
-  geom_smooth(method=lm, aes(fill=condition))+facet_wrap(~workerid)
-ggsave("subject_variability_2_exposure_phase.pdf", width=20, height = 25)
+#ggplot(exposure_data, aes(x=trial_sequence_total, y=response, color = condition, shape = condition)) + 
+# geom_point() + 
+#  geom_smooth(method=lm, aes(fill=condition))+facet_wrap(~workerid)
+#ggsave("subject_variability_2_exposure_phase.pdf", width=20, height = 25)
 
 ###
 subj = subset(test_data, island_tested =="SUBJ")
