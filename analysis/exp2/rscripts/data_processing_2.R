@@ -11,7 +11,7 @@ library(tidyverse)
 library(simr)
 library(brms)
 `%notin%` <- Negate(`%in%`)
-data<-read.csv("../../../experiment/satiation_exp2/results/satiation_exp2-trials.csv")
+data<-read.csv("../../../results/exp_2/satiation_exp2-trials.csv")
 test_cond = "CNPC"
 
 # color-blind-friendly colors:
@@ -19,8 +19,8 @@ cbPalette = c("#d55e00", "#009e74","#e69d00","#f0e442","cc79a7", "#0071b2")
 
 #Step 1: Filter out the participants who responded incorrectely more than once to the practice questions:
 practice_data=subset(data,block_sequence == "practice")
-practice_good_data=subset(practice_data, wrong_attempts <= 1)
-data=subset(data, is.element(workerid, practice_good_data$workerid))
+practice_bad_data=subset(practice_data, wrong_attempts > 1)
+data=subset(data, workerid %notin% practice_bad_data$workerid)
 
 
 #Step 2: filter: no overlap of 95%CI of FILL and UNGRAM
@@ -29,7 +29,7 @@ filler_data = subset(data, condition == "FILL")
 ungram_data = subset(data, condition == "UNGRAM")
 
 filler_by_subject = aggregate(filler_data[,"response"],list(filler_data$workerid), mean)
-ungram_by_subject = aggregate(ungram_data[,"response"],list(ungram_data$workerid), ci.high)
+ungram_by_subject = aggregate(ungram_data[,"response"],list(ungram_data$workerid), ci.high.int)
 
 names(filler_by_subject)[names(filler_by_subject) == "Group.1"] <- "subject"
 names(filler_by_subject)[names(filler_by_subject) == "x"] <- "fill_avg"
@@ -100,8 +100,7 @@ test_data <- subset(d, phase == "test")
 
 #step 7: stats
 
-#model_exposure <- lmer(response~trial_sequence_total*condition + 
-#                     (1 + trial_sequence_total*condition |workerid)+(1+trial_sequence_total*condition|item_number), data = test_data)
+#model_exposure <- lmer(response~trial_sequence_total*condition + (1 + trial_sequence_total*condition |workerid)+(1+trial_sequence_total*condition|item_number), data = exposure_data)
 #summary(model_exposure)
 
 #model_test <- lmer(response~test_match_cond*condition + (1 + condition |workerid)+(1+test_match_cond*condition|item_number), data = test_data)
@@ -197,15 +196,10 @@ c= ggplot(exposure_data, aes(x=trial_sequence_total, y=response, color = conditi
   geom_smooth(method=lm, aes(fill=condition))+theme_bw()
 
 c
-#by-subject Plot
-#ggplot(exposure_data, aes(x=trial_sequence_total, y=response, color = condition, shape = condition)) + 
-# geom_point() + 
-#  geom_smooth(method=lm, aes(fill=condition))+facet_wrap(~workerid)
-#ggsave("subject_variability_2_exposure_phase.pdf", width=20, height = 25)
+#-subject Plot
+ggplot(exposure_data, aes(x=trial_sequence_total, y=response, color = condition, shape = condition)) + 
+ geom_point() + 
+  geom_smooth(method=lm, aes(fill=condition))+facet_wrap(~workerid)
+ggsave("subject_variability_2_exposure_phase.pdf", width=20, height = 25)
 
 ###
-subj = subset(test_data, island_tested =="SUBJ")
-
-cnpc = subset(test_data, island_tested =="CNPC")
-
-wh = subset(test_data, island_tested =="WH")
