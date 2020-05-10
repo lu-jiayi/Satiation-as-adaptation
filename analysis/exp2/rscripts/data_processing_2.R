@@ -11,11 +11,10 @@ library(tidyverse)
 library(simr)
 library(brms)
 `%notin%` <- Negate(`%in%`)
-data<-read.csv("../../../results/exp_2/satiation_exp2-trials.csv")
-test_cond = "CNPC"
+data<-read.csv("../raw_data/satiation_exp2-trials.csv")
 
 # color-blind-friendly colors:
-cbPalette = c("#d55e00", "#009e74","#e69d00","#f0e442","cc79a7", "#0071b2")
+cbPalette = c("#d55e00", "#009e74","#e69d00","#f0e442","#cc79a7", "#0071b2")
 
 #Step 1: Filter out the participants who responded incorrectely more than once to the practice questions:
 practice_data=subset(data,block_sequence == "practice")
@@ -49,7 +48,7 @@ for (i in (1:length(all_filler$subject))){
 data = subset(data, workerid %in% eligible_subjects)
 
 #Step 3: exclude non-English speakers
-non_Eng <- c()
+non_Eng <- c(142, 171, 240)
 
 data = subset(data, workerid %notin% non_Eng)
 
@@ -99,12 +98,38 @@ exposure_data <- subset(d, phase == "exposure")
 test_data <- subset(d, phase == "test")
 
 #step 7: stats
+library(optimx)
+# cnpc_exposure <- subset(exposure_data, island_tested == "CNPC")
+# subj_exposure <- subset(exposure_data, island_tested == "SUBJ")
+# wh_exposure <- subset(exposure_data, island_tested == "WH")
+# # 
+   model_exposure <- lmer(response~trial_sequence_total*condition + 
+                                 (1 + trial_sequence_total|workerid)+
+                               (1+trial_sequence_total*condition|item_number), 
+                          data = exposure_data, verbose=100, control = lmerControl(calc.derivs = FALSE))
+   summary(model_exposure)
+# # 
+# model_exposure_subj <- lmer(response~trial_sequence_total*condition + 
+#                               (1 + trial_sequence_total*condition |workerid)+
+#                               (1+trial_sequence_total*condition|item_number), 
+#                             data = subj_exposure)
+# summary(model_exposure_subj)
+# 
+# model_exposure_wh <- lmer(response~trial_sequence_total*condition + 
+#                               (1 + trial_sequence_total*condition |workerid)+
+#                               (1+trial_sequence_total*condition|item_number), 
+#                             data = wh_exposure)
+# summary(model_exposure_wh)
+# 
+# model_exposure_cnpc <- lmer(response~trial_sequence_total*condition + 
+#                               (1 + trial_sequence_total*condition |workerid)+
+#                               (1+trial_sequence_total*condition|item_number), 
+#                             data = cnpc_exposure)
+# summary(model_exposure_cnpc)
 
-#model_exposure <- lmer(response~trial_sequence_total*condition + (1 + trial_sequence_total*condition |workerid)+(1+trial_sequence_total*condition|item_number), data = exposure_data)
-#summary(model_exposure)
 
-#model_test <- lmer(response~test_match_cond*condition + (1 + condition |workerid)+(1+test_match_cond*condition|item_number), data = test_data)
-#summary(model_test)
+model_test <- lmer(response~test_match_cond*condition + (1 + condition |workerid)+(1+test_match_cond*condition|item_number), data = test_data)
+summary(model_test)
 
 #step8: plot
 # summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
@@ -191,15 +216,25 @@ ggplot(means, aes(x=sentence_type,y=Mean,fill=test_match_cond)) +
 ggsave("../graphs/test_means.pdf",width=5.5,height=3)
 
 #overall plot:
-c= ggplot(exposure_data, aes(x=trial_sequence_total, y=response, color = condition, shape = condition)) + 
-  geom_point() + 
+ggplot(exposure_data, aes(x=trial_sequence_total, y=response, color = condition, shape = condition)) + 
+  geom_point(alpha = .5) + 
+  scale_color_manual(values=cbPalette) +
+  scale_fill_manual(values=cbPalette) +
+  xlab("Presentation Order") +
+  ylab("Acceptability rating")+
   geom_smooth(method=lm, aes(fill=condition))+theme_bw()
 
-c
+ggsave("../graphs/exposure_phase.pdf",width=10,height=2.5)
+
+d= ggplot(exposure_data, aes(x=trial_sequence_total, y=response, color = condition, shape = condition)) + 
+  geom_point() + 
+  geom_smooth(aes(fill=condition))+theme_bw()
+
+d
 #-subject Plot
-ggplot(exposure_data, aes(x=trial_sequence_total, y=response, color = condition, shape = condition)) + 
- geom_point() + 
-  geom_smooth(method=lm, aes(fill=condition))+facet_wrap(~workerid)
-ggsave("subject_variability_2_exposure_phase.pdf", width=20, height = 25)
+ ggplot(exposure_data, aes(x=trial_sequence_total, y=response, color = condition, shape = condition)) + 
+  geom_point() + 
+   geom_smooth(method=lm, aes(fill=condition))+facet_wrap(~workerid)
+ggsave("../graphs/subject_variability.pdf", width=20, height = 25)
 
 ###
