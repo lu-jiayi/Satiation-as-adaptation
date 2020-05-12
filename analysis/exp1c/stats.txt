@@ -1,0 +1,10 @@
+Fixed effects:
+                                     Estimate Std. Error t value
+(Intercept)                         0.9202263  0.0136851  67.243
+trial_sequence_total               -0.0001054  0.0002380  -0.443
+conditionCNPC                      -0.4692391  0.0427959 -10.965
+conditionSUBJ                      -0.5385301  0.0383699 -14.035
+conditionWH                        -0.3569148  0.0400624  -8.909
+trial_sequence_total:conditionCNPC  0.0017794  0.0005211   3.415
+trial_sequence_total:conditionSUBJ  0.0039288  0.0005407   7.266
+trial_sequence_total:conditionWH    0.0023509  0.0004075   5.769

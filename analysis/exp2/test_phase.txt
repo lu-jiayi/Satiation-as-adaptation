@@ -1,0 +1,74 @@
+Linear mixed model fit by REML ['lmerMod']
+Formula: response ~ test_match_cond * condition + (1 + condition | workerid) +  
+    (1 + test_match_cond * condition | item_number)
+   Data: test_data
+
+REML criterion at convergence: -4853.2
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-6.5430 -0.2335  0.0287  0.2098  6.6174 
+
+Random effects:
+ Groups      Name                                    Variance  Std.Dev.  Corr       
+ workerid    (Intercept)                             4.260e-03 6.527e-02            
+             conditionCNPC                           6.745e-02 2.597e-01 -0.25      
+             conditionSUBJ                           2.016e-02 1.420e-01 -0.40  0.10
+             conditionWH                             3.939e-02 1.985e-01 -0.14  0.31
+             conditionUNGRAM                         3.196e-02 1.788e-01 -0.87  0.40
+ item_number (Intercept)                             2.495e-07 4.995e-04            
+             test_match_condmismatch                 2.192e-09 4.682e-05  0.56      
+             conditionCNPC                           9.030e-07 9.503e-04  0.82  0.93
+             conditionSUBJ                           8.516e-04 2.918e-02  0.53  0.08
+             conditionWH                             2.467e-06 1.571e-03 -0.19  0.52
+             conditionUNGRAM                         1.721e-04 1.312e-02  0.07  0.17
+             test_match_condmismatch:conditionCNPC   2.388e-04 1.545e-02  0.38  0.41
+             test_match_condmismatch:conditionSUBJ   9.400e-04 3.066e-02 -0.02 -0.13
+             test_match_condmismatch:conditionWH     3.262e-03 5.711e-02 -0.17 -0.54
+             test_match_condmismatch:conditionUNGRAM 5.723e-06 2.392e-03  0.08  0.17
+ Residual                                            1.606e-02 1.267e-01            
+                                          
+                                          
+                                          
+                                          
+  0.01                                    
+  0.44  0.22                              
+                                          
+                                          
+                                          
+  0.28                                    
+  0.28 -0.09                              
+  0.14  0.43  0.25                        
+  0.45  0.29 -0.17 -0.34                  
+ -0.10 -0.03 -0.19  0.06 -0.14            
+ -0.45 -0.10 -0.65  0.20 -0.37  0.29      
+  0.15  0.44  0.23  1.00 -0.35  0.07  0.21
+                                          
+Number of obs: 4914, groups:  workerid, 271; item_number, 30
+
+Fixed effects:
+                                         Estimate Std. Error t value
+(Intercept)                              0.953055   0.007376 129.215
+test_match_condmismatch                 -0.007242   0.009990  -0.725
+conditionCNPC                           -0.438023   0.037638 -11.638
+conditionSUBJ                           -0.394954   0.026238 -15.053
+conditionWH                             -0.211380   0.030268  -6.984
+conditionUNGRAM                         -0.888282   0.017835 -49.804
+test_match_condmismatch:conditionCNPC   -0.013058   0.051177  -0.255
+test_match_condmismatch:conditionSUBJ   -0.076910   0.033232  -2.314
+test_match_condmismatch:conditionWH     -0.215632   0.046421  -4.645
+test_match_condmismatch:conditionUNGRAM  0.016184   0.022947   0.705
+
+Correlation of Fixed Effects:
+            (Intr) tst_m_ cnCNPC cnSUBJ cndtWH cUNGRA t__:CN t__:SU t__:WH
+tst_mtch_cn -0.728                                                        
+conditnCNPC -0.193  0.139                                                 
+conditnSUBJ -0.257  0.186  0.060                                          
+conditionWH -0.169  0.130  0.041  0.046                                   
+cndtnUNGRAM -0.756  0.546  0.243  0.232  0.156                            
+tst_m_:CNPC  0.139 -0.191 -0.733 -0.043 -0.030 -0.174                     
+tst_m_:SUBJ  0.199 -0.274 -0.047 -0.627 -0.038 -0.179  0.064              
+tst_mtc_:WH  0.117 -0.161 -0.027 -0.032 -0.554 -0.102  0.036  0.046       
+ts__:UNGRAM  0.575 -0.790 -0.184 -0.176 -0.121 -0.677  0.252  0.259  0.148
+convergence code: 0
+boundary (singular) fit: see ?isSingular

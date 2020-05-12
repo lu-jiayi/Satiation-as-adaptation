@@ -1,0 +1,13 @@
+Number of obs: 14994, groups:  workerid, 146; item_number, 94
+Fixed effects:
+                                       Estimate Std. Error t value
+(Intercept)                           9.071e-01  1.187e-02  76.438
+trial_sequence_total                  1.779e-04  8.229e-05   2.162
+conditionWH                          -4.120e-01  3.203e-02 -12.864
+conditionCNPC                        -5.554e-01  2.664e-02 -20.851
+conditionSUBJ                        -5.736e-01  3.496e-02 -16.406
+conditionUNGRAM                      -8.284e-01  7.487e-02 -11.066
+trial_sequence_total:conditionWH      8.390e-04  2.678e-04   3.133
+trial_sequence_total:conditionCNPC    8.774e-04  2.523e-04   3.477
+trial_sequence_total:conditionSUBJ    1.065e-03  2.953e-04   3.606
+trial_sequence_total:conditionUNGRAM  9.661e-04  7.947e-02   0.012
