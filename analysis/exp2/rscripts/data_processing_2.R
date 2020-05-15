@@ -112,8 +112,8 @@ library(optimx)
 #                           data = exposure_data, verbose=100, control = lmerControl(calc.derivs = FALSE))
 #    summary(model_exposure)
 
- model_test <- lmer(response~test_match_cond*condition + (1 + condition |workerid)+(1+test_match_cond*condition|item_number), data = test_data)
- summary(model_test)
+# model_test <- lmer(response~test_match_cond*condition + (1|workerid)+(1+test_match_cond*condition|item_number), data = test_data)
+# summary(model_test)
 
 #step8: plot
 # summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,

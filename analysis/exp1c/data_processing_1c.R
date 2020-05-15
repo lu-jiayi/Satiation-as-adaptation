@@ -10,6 +10,7 @@ library(simr)
 library(brms)
 `%notin%` <- Negate(`%in%`)
 data<-read.csv("satiation_1c_75item-trials.csv")
+cbPalette = c("#d55e00", "#009e74","#e69d00","#cc79a7", "#0071b2")
 
 #Step 1: Filter out the participants who responded incorrectely more than once to the practice questions:
 practice_data=subset(data,block_sequence == "practice")
@@ -96,13 +97,13 @@ d$condition <- factor(d$condition, levels = c("FILL", "CNPC","SUBJ","WH","UNGRAM
 #summary(model_block)
 #data$condition <- factor(data$condition, levels = c("FILL", "CNPC","SUBJ","WH"))
 
-d_new <- subset(d, condition != "UNGRAM")
-model_global2 <- lmer(response~trial_sequence_total*condition + 
-                       (1+trial_sequence_total*condition|workerid)+(1+trial_sequence_total*condition|item_number), data = d_new)
-summary(model_global2)
-#model_global3 <- brm(response~trial_sequence_total*condition + 
-#                       (1+trial_sequence_total*condition|workerid)+(1+trial_sequence_total*condition|item_number), data = d)
-#summary(model_global3)
+# d_new <- subset(d, condition != "UNGRAM")
+# model_global2 <- lmer(response~trial_sequence_total*condition + 
+#                        (1+trial_sequence_total*condition|workerid)+(1+trial_sequence_total*condition|item_number), data = d_new)
+# summary(model_global2)
+# #model_global3 <- brm(response~trial_sequence_total*condition + 
+# #                       (1+trial_sequence_total*condition|workerid)+(1+trial_sequence_total*condition|item_number), data = d)
+# #summary(model_global3)
 
 #power analysis
 #model_ext_class <- extend(model_global2, along="workerid", n=150)
@@ -113,11 +114,25 @@ summary(model_global2)
 #powerSim(model_global2, test=fcompare(response~trial_sequence_total*condition))
 
 #overall plot:
-c= ggplot(d, aes(x=trial_sequence_total, y=response, color = condition, shape = condition)) + 
-  geom_point() + 
+# c= ggplot(d, aes(x=trial_sequence_total, y=response, color = condition, shape = condition)) + 
+#   geom_point() + 
+#   geom_smooth(method=lm, aes(fill=condition))+theme_bw()
+# 
+
+trial_means = d %>%
+  group_by(condition,trial_sequence_total) %>%
+  summarize(response = mean(response)) %>%
+  ungroup() 
+
+ggplot(d, aes(x=trial_sequence_total, y=response, color = condition, shape = condition)) + 
+  geom_point(data=trial_means,alpha=.9) + 
+  scale_color_manual(values=cbPalette) +
+  scale_fill_manual(values=cbPalette) +
+  xlab("Presentation Order") +
+  ylab("Acceptability rating")+
   geom_smooth(method=lm, aes(fill=condition))+theme_bw()
 
-c
+
 #by-subject Plot
 ggplot(d, aes(x=trial_sequence_total, y=response, color = condition, shape = condition)) + 
   geom_point() + 
