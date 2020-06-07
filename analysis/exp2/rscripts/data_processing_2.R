@@ -9,9 +9,10 @@ library(gtable)
 library(lme4)
 library(tidyverse)
 library(simr)
+library(lmerTest)
 library(brms)
 `%notin%` <- Negate(`%in%`)
-data<-read.csv("../raw_data/satiation_exp2-trials.csv")
+data<-read.csv("../raw_data_exp2/satiation_exp2-trials.csv")
 
 # color-blind-friendly colors:
 cbPalette = c("#d55e00", "#009e74","#e69d00","#cc79a7", "#0071b2")
@@ -89,7 +90,7 @@ ggsave("../graphs/cum_avg.pdf",width=5,height=5)
 
 
 
-#Step 6Clean practice trials and control trials.
+#Step 6  Clean practice trials and control trials.
 data = subset(data, block_sequence != "practice")
 d=transform(data, block_sequence = as.numeric(block_sequence))
 write.csv(d,"satiation_exp2_cleaned.csv", row.names = FALSE)
@@ -106,14 +107,14 @@ library(optimx)
 # subj_exposure <- subset(exposure_data, island_tested == "SUBJ")
 # wh_exposure <- subset(exposure_data, island_tested == "WH")
 # # 
-#    model_exposure <- lmer(response~trial_sequence_total*condition + 
-#                                  (1 + trial_sequence_total|workerid)+
-#                                (1+trial_sequence_total*condition|item_number), 
-#                           data = exposure_data, verbose=100, control = lmerControl(calc.derivs = FALSE))
-#    summary(model_exposure)
+model_exposure <- lmer(response~trial_sequence_total*condition + 
+                         (1|workerid)+
+                         (1+trial_sequence_total*condition|item_number), 
+                       data = exposure_data, verbose=100)
+summary(model_exposure)
 
-# model_test <- lmer(response~test_match_cond*condition + (1|workerid)+(1+test_match_cond*condition|item_number), data = test_data)
-# summary(model_test)
+ model_test <- lmer(response~test_match_cond*condition + (1|workerid)+(1+test_match_cond*condition|item_number), data = test_data)
+ summary(model_test)
 
 #step8: plot
 # summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,

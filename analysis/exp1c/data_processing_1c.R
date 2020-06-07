@@ -7,6 +7,7 @@ library(gtable)
 library(lme4)
 library(tidyverse)
 library(simr)
+library(lmerTest)
 library(brms)
 `%notin%` <- Negate(`%in%`)
 data<-read.csv("satiation_1c_75item-trials.csv")
@@ -97,10 +98,11 @@ d$condition <- factor(d$condition, levels = c("FILL", "CNPC","SUBJ","WH","UNGRAM
 #summary(model_block)
 #data$condition <- factor(data$condition, levels = c("FILL", "CNPC","SUBJ","WH"))
 
-# d_new <- subset(d, condition != "UNGRAM")
-# model_global2 <- lmer(response~trial_sequence_total*condition + 
-#                        (1+trial_sequence_total*condition|workerid)+(1+trial_sequence_total*condition|item_number), data = d_new)
-# summary(model_global2)
+ d_new <- subset(d, condition != "UNGRAM")
+model_global2 <- lmer(response~trial_sequence_total*condition + 
+                        (1+trial_sequence_total*condition|workerid)+(1+trial_sequence_total*condition|item_number), data = d_new, verbose = 100)
+ summary(model_global2)
+ anova(model_global2)
 # #model_global3 <- brm(response~trial_sequence_total*condition + 
 # #                       (1+trial_sequence_total*condition|workerid)+(1+trial_sequence_total*condition|item_number), data = d)
 # #summary(model_global3)
@@ -132,6 +134,7 @@ ggplot(d, aes(x=trial_sequence_total, y=response, color = condition, shape = con
   ylab("Acceptability rating")+
   geom_smooth(method=lm, aes(fill=condition))+theme_bw()
 
+ggsave("satiation_1c_plot.pdf",width=5,height=2.5)
 
 #by-subject Plot
 ggplot(d, aes(x=trial_sequence_total, y=response, color = condition, shape = condition)) + 

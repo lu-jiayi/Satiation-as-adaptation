@@ -1,12 +1,28 @@
 Fixed effects:
-                                       Estimate Std. Error  t value
-(Intercept)                           0.9459860  0.0065576  144.258
-trial_sequence_total                  0.0002054  0.0002070    0.992
-conditionCNPC                        -0.5042855  0.0321648  -15.678
-conditionSUBJ                        -0.5945490  0.0226957  -26.197
-conditionWH                          -0.4469708  0.0207341  -21.557
-conditionUNGRAM                      -0.9108431  0.0071855 -126.761
-trial_sequence_total:conditionCNPC    0.0015242  0.0010199    1.495
-trial_sequence_total:conditionSUBJ    0.0045745  0.0004931    9.277
-trial_sequence_total:conditionWH      0.0050991  0.0006804    7.494
-trial_sequence_total:conditionUNGRAM -0.0002418  0.0002695   -0.897
+                                       Estimate Std. Error         df  t value Pr(>|t|)    
+(Intercept)                           9.461e-01  6.634e-03  1.044e+02  142.612  < 2e-16 ***
+trial_sequence_total                  1.991e-04  1.896e-04  7.431e+02    1.050   0.2940    
+conditionCNPC                        -5.051e-01  1.753e-02  1.975e+01  -28.814  < 2e-16 ***
+conditionSUBJ                        -5.955e-01  1.645e-02  1.449e+01  -36.205 1.27e-15 ***
+conditionWH                          -4.461e-01  1.609e-02  1.747e+01  -27.718 6.93e-16 ***
+conditionUNGRAM                      -9.108e-01  7.252e-03  1.523e+02 -125.595  < 2e-16 ***
+trial_sequence_total:conditionCNPC    1.556e-03  6.396e-04  1.823e+01    2.433   0.0255 *  
+trial_sequence_total:conditionSUBJ    4.616e-03  4.521e-04  1.824e+01   10.210 5.67e-09 ***
+trial_sequence_total:conditionWH      5.053e-03  5.426e-04  1.555e+01    9.312 9.36e-08 ***
+trial_sequence_total:conditionUNGRAM -2.431e-04  2.678e-04  1.384e+03   -0.908   0.3641    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+            (Intr) trl_s_ cnCNPC cnSUBJ cndtWH cUNGRA t__:CN t__:SU t__:WH
+trl_sqnc_tt -0.673                                                        
+conditnCNPC -0.238  0.255                                                 
+conditnSUBJ -0.253  0.272  0.087                                          
+conditionWH -0.259  0.277  0.089  0.095                                   
+cndtnUNGRAM -0.574  0.616  0.217  0.232  0.237                            
+trl_s_:CNPC  0.200 -0.296 -0.801 -0.080 -0.082 -0.183                     
+trl_s_:SUBJ  0.282 -0.419 -0.107 -0.394 -0.116 -0.258  0.124              
+trl_sqn_:WH  0.235 -0.349 -0.089 -0.095 -0.852 -0.215  0.104  0.147       
+tr__:UNGRAM  0.476 -0.708 -0.180 -0.192 -0.196 -0.860  0.210  0.297  0.247
+convergence code: 0
+boundary (singular) fit: see ?isSingular
