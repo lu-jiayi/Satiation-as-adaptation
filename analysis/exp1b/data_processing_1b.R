@@ -6,6 +6,7 @@ library(ggplot2)
 library(gtable)
 library(lme4)
 library(tidyverse)
+library(lmerTest)
 library(simr)
 library(brms)
 `%notin%` <- Negate(`%in%`)
@@ -49,9 +50,9 @@ for (i in (1:length(all_filler$subject))){
   }
 }
 data = subset(data, workerid %in% eligible_subjects)
-data_1 = subset(data, workerid < 41)
-data_2 = subset(data, workerid > 80)
-data<- rbind(data_1, data_2)
+# data_1 = subset(data, workerid < 41)
+# data_2 = subset(data, workerid > 120)
+# data<- rbind(data_1, data_2)
 #Step 3: exclude non-English speakers
 non_Eng <- c(119)
 
@@ -83,12 +84,12 @@ theme_bw()
 
 #Clean practice trials and control trials.
 data = subset(data, block_sequence != "practice")
-data = subset(data, condition != "UNGRAM")
+#data = subset(data, condition != "UNGRAM")
 #data = subset(data, condition != "FILL")
 d=transform(data, block_sequence = as.numeric(block_sequence))
 write.csv(d,"satiation_baseline_cleaned.csv", row.names = FALSE)
 d <- read.csv("satiation_baseline_cleaned.csv")
-d$condition <- factor(d$condition, levels = c("FILL", "WH", "CNPC","SUBJ"))
+d$condition <- factor(d$condition, levels = c("FILL", "WH", "CNPC","SUBJ", "UNGRAM"))
 d$trial_sequence_total <- as.numeric(d$trial_sequence_total)
 
 #look at subset of conditions
@@ -99,7 +100,6 @@ d$trial_sequence_total <- as.numeric(d$trial_sequence_total)
 #Step 6: Statistics
 #model_block <- lmer(response~block_sequence*condition + (1+block_sequence*condition|workerid)+(1+condition|item_number), data = d)
 #summary(model_block)
-data$condition <- factor(data$condition, levels = c("FILL", "CNPC","SUBJ","WH"))
 model_global2 <- lmer(response~trial_sequence_total*condition + 
                      (1+trial_sequence_total*condition|workerid)+(1+trial_sequence_total*condition|item_number), data=d)
 summary(model_global2)
@@ -140,4 +140,19 @@ ggplot(d_n, aes(x=trial_sequence_total, y=response, color = condition, shape = c
   geom_point() + 
  geom_smooth(method=lm, aes(fill=condition))+facet_wrap(~workerid)
 ggsave("subject_variability_1b.pdf", width=20, height = 25)
+
+trial_means = d %>%
+  group_by(condition,trial_sequence_total) %>%
+  summarize(response = mean(response)) %>%
+  ungroup() 
+
+ggplot(d, aes(x=trial_sequence_total, y=response, color = condition, shape = condition)) + 
+  geom_point(data=trial_means,alpha=.9) + 
+  scale_color_manual(values=cbPalette) +
+  scale_fill_manual(values=cbPalette) +
+  xlab("Presentation Order") +
+  ylab("Acceptability rating")+
+  geom_smooth(method=lm, aes(fill=condition))+theme_bw()
+
+ggsave("satiation_1b_plot.pdf",width=5,height=2.5)
 

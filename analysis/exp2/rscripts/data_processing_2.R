@@ -12,7 +12,7 @@ library(simr)
 library(lmerTest)
 library(brms)
 `%notin%` <- Negate(`%in%`)
-data<-read.csv("../raw_data_exp2/satiation_exp2-trials.csv")
+data<-read.csv("satiation_exp2-trials.csv")
 
 # color-blind-friendly colors:
 cbPalette = c("#d55e00", "#009e74","#e69d00","#cc79a7", "#0071b2")
@@ -63,7 +63,6 @@ agg_comp <- subset(agg_comp, x > 0.75)
 data <- subset(data, workerid %in% agg_comp$Group.1)
 
 
-
 #Step 5: calculate and plot trial/cumulative average
 data = subset(data, block_sequence != "practice")
 trial_avg <- aggregate(data[,"response"],list(data$trial_sequence_total), mean)
@@ -101,6 +100,62 @@ d$condition <- factor(d$condition, levels = c("FILL", "CNPC","SUBJ","WH","UNGRAM
 exposure_data <- subset(d, phase == "exposure")
 test_data <- subset(d, phase == "test")
 
+#Extra: subset out the first 6 trials
+data_first6 = subset(exposure_data, trial_sequence_total <=6)
+mismatch_test = subset(test_data, test_match_cond == "mismatch")
+first_last <- full_join(data_first6, mismatch_test)
+
+# first_last_model <- lmer(response~phase*condition + (1+phase|workerid)+(1+phase*condition|item_number), first_last)
+# summary(first_last_model)
+
+
+first_last = first_last %>%
+  mutate(sentence_type = fct_recode(condition,"grammatical"="FILL","ungrammatical"="UNGRAM")) %>%
+  mutate(sentence_type = fct_relevel(sentence_type,"grammatical","WH","SUBJ","CNPC"))
+
+means = first_last %>%
+  group_by(phase,sentence_type) %>%
+  summarize(Mean = mean(response), CILow = ci.low(response), CIHigh = ci.high(response)) %>%
+  ungroup() %>%
+  mutate(YMin=Mean-CILow,YMax=Mean+CIHigh)
+
+subj_means = first_last %>%
+  group_by(phase,sentence_type,workerid) %>%
+  summarize(Mean = mean(response)) %>%
+  ungroup() 
+
+dodge = position_dodge(.9)
+
+ggplot(means, aes(x=sentence_type,y=Mean,fill=phase)) +
+  geom_bar(stat="identity",position=dodge,color="black") +
+  geom_point(data=subj_means,alpha=.2,position=dodge,color="gray30") +
+  geom_errorbar(aes(ymin=YMin,ymax=YMax),width=.25,position=dodge) +
+  scale_fill_manual(values=cbPalette,name="Phase") +
+  xlab("Sentence type") +
+  ylab("Mean acceptability rating")
+
+
+d_mis = subset(d, test_match_cond == "mismatch")
+trial_means = d %>%
+  group_by(condition,trial_sequence_total) %>%
+  summarize(response = mean(response)) %>%
+  ungroup() 
+
+ggplot(d, aes(x=trial_sequence_total, y=response, color = condition, shape = condition)) + 
+  geom_point(data=trial_means,alpha=.9) + 
+  scale_color_manual(values=cbPalette) +
+  scale_fill_manual(values=cbPalette) +
+  xlab("Presentation Order") +
+  ylab("Acceptability rating")+
+  geom_smooth(method=loess, aes(fill=condition))+theme_bw()
+
+
+
+
+
+
+
+
 #step 7: stats
 library(optimx)
 # cnpc_exposure <- subset(exposure_data, island_tested == "CNPC")
@@ -115,6 +170,13 @@ summary(model_exposure)
 
  model_test <- lmer(response~test_match_cond*condition + (1|workerid)+(1+test_match_cond*condition|item_number), data = test_data)
  summary(model_test)
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 
 #step8: plot
 # summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
@@ -215,6 +277,8 @@ ggplot(exposure_data, aes(x=trial_sequence_total, y=response, color = condition,
   geom_smooth(method=lm, aes(fill=condition))+theme_bw()
 
 ggsave("../graphs/exposure_phase.pdf",width=5,height=2.5)
+
+
 
 
 #-subject Plot
