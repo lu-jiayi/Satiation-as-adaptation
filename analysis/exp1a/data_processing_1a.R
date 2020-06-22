@@ -1,4 +1,6 @@
-setwd("C:/Users/aldos/Desktop/directed_research_satiation")
+this.dir <- dirname(rstudioapi::getSourceEditorContext()$path)
+setwd(this.dir)
+
 library(plyr)
 library(dplyr)
 library(reshape)
@@ -8,8 +10,7 @@ library(lme4)
 library(tidyverse)
 library(simr)
 library(brms)
-data<-read.csv("satiation_baseline-trials.csv")
-
+data<-read.csv("../../raw_data/satiation_baseline-trials.csv")
 #Step 1: Filter out the participants who responded incorrectely to the practice questions:
 practice_good_data=subset(data,condition == "practice_good")
 practice_good_data=subset(practice_good_data,response >= 0.75)
