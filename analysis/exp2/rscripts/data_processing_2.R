@@ -12,11 +12,11 @@ library(simr)
 library(lmerTest)
 library(brms)
 `%notin%` <- Negate(`%in%`)
-data<-read.csv("../../raw_data/satiation_exp2-trials.csv")
+data<-read.csv("../../../raw_data/satiation_exp2-trials.csv")
 
 # color-blind-friendly colors:
 cbPalette = c("#d55e00", "#009e74","#e69d00","#cc79a7", "#0071b2")
-
+color_list = c("black", "black")
 #Step 1: Filter out the participants who responded incorrectely more than once to the practice questions:
 practice_data=subset(data,block_sequence == "practice")
 practice_bad_data=subset(practice_data, wrong_attempts > 1)
@@ -104,9 +104,9 @@ test_data <- subset(d, phase == "test")
 data_first6 = subset(exposure_data, trial_sequence_total <=6)
 mismatch_test = subset(test_data, test_match_cond == "mismatch")
 first_last <- full_join(data_first6, mismatch_test)
-
- first_last_model <- lmer(response~phase*condition + (1+phase|workerid)+(1+phase*condition|item_number), first_last)
- summary(first_last_model)
+# 
+#  first_last_model <- lmer(response~phase*condition + (1+phase|workerid)+(1+phase*condition|item_number), first_last)
+#  summary(first_last_model)
 
 
 first_last = first_last %>%
@@ -162,15 +162,15 @@ library(optimx)
 # subj_exposure <- subset(exposure_data, island_tested == "SUBJ")
 # wh_exposure <- subset(exposure_data, island_tested == "WH")
 # # 
-model_exposure <- lmer(response~trial_sequence_total*condition + 
-                         (1|workerid)+
-                         (1+trial_sequence_total*condition|item_number), 
-                       data = exposure_data, verbose=100)
-summary(model_exposure)
-
- model_test <- lmer(response~test_match_cond*condition + (1|workerid)+(1+test_match_cond*condition|item_number), data = test_data)
- summary(model_test)
- 
+# model_exposure <- lmer(response~trial_sequence_total*condition + 
+#                          (1|workerid)+
+#                          (1+trial_sequence_total*condition|item_number), 
+#                        data = exposure_data, verbose=100)
+# summary(model_exposure)
+# 
+#  model_test <- lmer(response~test_match_cond*condition + (1|workerid)+(1+test_match_cond*condition|item_number), data = test_data)
+#  summary(model_test)
+#  
  
  
  
@@ -241,25 +241,30 @@ test_data = test_data %>%
   mutate(sentence_type = fct_relevel(sentence_type,"grammatical","WH","SUBJ","CNPC"))
 
 means = test_data %>%
-  group_by(test_match_cond,sentence_type) %>%
+  group_by(test_match_cond, sentence_type) %>%
   summarize(Mean = mean(response), CILow = ci.low(response), CIHigh = ci.high(response)) %>%
   ungroup() %>%
   mutate(YMin=Mean-CILow,YMax=Mean+CIHigh)
 
 subj_means = test_data %>%
-  group_by(test_match_cond,sentence_type,workerid) %>%
+  group_by(test_match_cond,sentence_type, workerid) %>%
   summarize(Mean = mean(response)) %>%
   ungroup() 
 
 dodge = position_dodge(.9)
 
-ggplot(means, aes(x=sentence_type,y=Mean,fill=test_match_cond)) +
-  geom_bar(stat="identity",position=dodge,color="black") +
-  geom_point(data=subj_means,alpha=.2,position=dodge,color="gray30") +
-  geom_errorbar(aes(ymin=YMin,ymax=YMax),width=.25,position=dodge) +
-  scale_fill_manual(values=cbPalette,name="Test condition") +
+ggplot(means, aes(x=sentence_type, y=Mean, fill=sentence_type)) +
+  geom_bar(stat="identity",aes(color=test_match_cond, alpha = test_match_cond), position=dodge) +
+  geom_point(data=subj_means,aes(x=sentence_type, y=Mean, color=test_match_cond), alpha=0.2, position=dodge,, show.legend = FALSE) +
+  geom_errorbar(aes(ymin=YMin,ymax=YMax, color=test_match_cond),width=.5, position=dodge,  show.legend = FALSE) +
+  scale_fill_manual(values=cbPalette, name = NULL) + 
+  theme_bw()+
   xlab("Sentence type") +
-  ylab("Mean acceptability rating")
+  ylab("Mean acceptability rating")+
+  scale_alpha_discrete(range = c(0.3, 1), name = "Test Conditions")+
+  scale_color_manual(values=color_list,name=NULL) +
+  guides(color = FALSE)+
+  guides(fill = FALSE)
 ggsave("../graphs/test_means.pdf",width=5.5,height=3)
 
 #overall plot:
