@@ -12,7 +12,7 @@ library(simr)
 library(lmerTest)
 library(brms)
 `%notin%` <- Negate(`%in%`)
-data<-read.csv("satiation_exp2-trials.csv")
+data<-read.csv("../../raw_data/satiation_exp2-trials.csv")
 
 # color-blind-friendly colors:
 cbPalette = c("#d55e00", "#009e74","#e69d00","#cc79a7", "#0071b2")
@@ -94,7 +94,7 @@ data = subset(data, block_sequence != "practice")
 d=transform(data, block_sequence = as.numeric(block_sequence))
 write.csv(d,"satiation_exp2_cleaned.csv", row.names = FALSE)
 d <- read.csv("satiation_exp2_cleaned.csv")
-d$condition <- factor(d$condition, levels = c("FILL", "CNPC","SUBJ","WH","UNGRAM"))
+d$condition <- factor(d$condition, levels = c("FILL", "WH","CNPC","SUBJ","UNGRAM"))
 #d <- subset(d, island_tested == test_cond)
 
 exposure_data <- subset(d, phase == "exposure")
@@ -105,8 +105,8 @@ data_first6 = subset(exposure_data, trial_sequence_total <=6)
 mismatch_test = subset(test_data, test_match_cond == "mismatch")
 first_last <- full_join(data_first6, mismatch_test)
 
-# first_last_model <- lmer(response~phase*condition + (1+phase|workerid)+(1+phase*condition|item_number), first_last)
-# summary(first_last_model)
+ first_last_model <- lmer(response~phase*condition + (1+phase|workerid)+(1+phase*condition|item_number), first_last)
+ summary(first_last_model)
 
 
 first_last = first_last %>%
