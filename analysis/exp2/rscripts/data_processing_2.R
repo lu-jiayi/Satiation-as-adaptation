@@ -238,7 +238,7 @@ library(optimx)
 
 test_data = test_data %>%
   mutate(sentence_type = fct_recode(condition,"grammatical"="FILL","ungrammatical"="UNGRAM")) %>%
-  mutate(sentence_type = fct_relevel(sentence_type,"grammatical","WH","SUBJ","CNPC"))
+  mutate(sentence_type = fct_relevel(sentence_type,"grammatical","WH","CNPC","SUBJ"))
 
 means = test_data %>%
   group_by(test_match_cond, sentence_type) %>%
@@ -264,8 +264,9 @@ ggplot(means, aes(x=sentence_type, y=Mean, fill=sentence_type)) +
   scale_alpha_discrete(range = c(0.3, 1), name = "Test Conditions")+
   scale_color_manual(values=color_list,name=NULL) +
   guides(color = FALSE)+
-  guides(fill = FALSE)
-ggsave("../graphs/test_means.pdf",width=5.5,height=3)
+  guides(fill = FALSE)+
+   theme(legend.position="bottom")
+ggsave("../graphs/test_means.pdf",width=5,height=4)
 
 #overall plot:
 trial_means = exposure_data %>%
