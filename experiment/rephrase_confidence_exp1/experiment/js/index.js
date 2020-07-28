@@ -107,8 +107,6 @@ function make_slides(f) {
       exp.sliderPost = null; //erase current slider value
     },
     button_1 : function() {
-      $(".context").hide();
-      $(".target").hide();
       $(".practice_instruction_1").hide();
       $(".practice_instruction_2").show();
       $(".rephrase_instruction_1").show();
@@ -195,8 +193,6 @@ function make_slides(f) {
       exp.sliderPost = null; //erase current slider value
     },
     button_1_2 : function() {
-      $(".context_2").hide();
-      $(".target_2").hide();
       $(".practice_instruction_1_2").hide();
       $(".practice_instruction_2_2").show();
       $(".rephrase_instruction_1_2").show();
@@ -295,8 +291,6 @@ function make_slides(f) {
       exp.sliderPost = null; //erase current slider value
     },
     button_1 : function() {
-      $(".context").hide();
-      $(".target").hide();
       $(".rephrase_instruction_2").show();
       $(".rephrase_box").show();
       $("slider_instruction").show();

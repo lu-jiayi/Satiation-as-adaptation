@@ -48,8 +48,9 @@ $(function(){
   <noscript>This task requires JavaScript.</noscript>
 
   <div class="slide" id="i0" >
-    <img src="images/stanford.png" style="float:right; width:120px;" >
-   <img src="images/alpslogo.png" style="float:left; width:120px;" >
+    <img src="images/alpslogo.png" style="float:left; width:120px;" >
+    <p><img src="images/stanford.png" style="float:right; width:120px;" ></p>
+
     <p id="cocolab" >Stanford University Department of Linguistics</p>
     <p id="instruct-text">This HIT should take approximately 20-25 minutes. Please pay attention, thanks!</p>
     <button id="start_button" type="button">Start Experiment</button>
@@ -64,30 +65,24 @@ $(function(){
   <br>
 
   <h3>Instructions</h3>
-  <p>In this experiment, you will be reading English sentences. On each slide, you will see a context sentence and a target sentence. Some of the target sentences may sound a bit awkward. <b>Your job is to rephrase the target sentence base on your interpretation. </b></p>
-  <p>You will also be asked to <b>rate your confidence in your rephrasing</b>. That is, how confident you are that your answer reflects the intended meaning of the target sentence.</p>
+  <p>In this experiment, you will be reading English sentences. On each slide, you will see a context sentence and a question sentence. Some of the question sentences may sound a bit awkward, and some may even be hard to comprehend. 
+  <p><b>Your job is to rephrase the question sentences base on your interpretations. </b></p>
+  <p>You will also be asked to <b>rate your confidence in your rephrasing</b>. That is, how confident you are that your answer reflects the intended meaning of the provided question sentence.</p>
   <button onclick="_s.button()">Continue</button>
 </div>
 
-<div class="slide" id="single_trial">
-  <p>Here is a single trial. Depending on the condition, you'll see different words below:</p>
-  <p class="display_condition">{{}}</p>
-  <input type="text" id="text_response"></input>
-  <button onclick="_s.button()">Continue</button>
-  <p class="err">Please write something.</p>
-</div>
 
   <div class="slide" id="practice_slider">
 
-    <p class = "practice_instruction_1">Let's try one practice item. Please read the context sentence and the target sentence very carefully. The target sentence may sound a bit awkward.</p>
-    <p class = "practice_instruction_2">Now, think about what the target sentence was intending to ask, and try your best to rephrase the target sentence.</p>
+    <p class = "practice_instruction_1">Let's try one practice item. Please read the context sentence and the target sentence very carefully. The bolded target sentence may sound a bit awkward.</p>
+    <p class = "practice_instruction_2">Now, think about what the bolded sentence is intending to ask, and try your best to rephrase it. </p>
 
     <p class="context"> </p>
     <p class="target"> </p>
     <button class = "button_1" onclick="_s.button_1()"></button>
-    <p class="rephrase_instruction_1">Please try to rephrase the target sentence:</p>
+    <p class="rephrase_instruction_1">Please try to rephrase the bolded question sentence:</p>
     <textarea  class = "rephrase_box" id="rephrase_practice" rows="3" cols="50" oncopy="return false" onpaste="return false" ></textarea>
-    <p class="rephrase_instruction_2">Are you confident that your answer captures what the target sentence intends to mean?</p>
+    <p class="rephrase_instruction_2">How confident are you that your rephrasing captures the bolded sentence's intended meaning?</p>
     <table id="slider_table" class="slider_table">
       <tr><td class="left">Not confident at all</td><td colspan="2"><div id="practice_slider_1" class="slider"></div></td><td class="right">Very confident</td></tr>
     </table>
@@ -103,21 +98,23 @@ $(function(){
     <br>
     <br>
 
-    <p>In this case, the target sentence is asking what the boy saw on the table. One possible rephrasing would be: <b>What is the thing that the boy saw on the table?</b> </p>
-    <p>Of course, there can be other ways to rephrase it. If you are confident that your rephrasing reflects the intended meaning of the target, you should drag the slider bar to the right. If not, drag the slider bar to the left.</p>
+    <p>In this case, the target sentence is asking what the boy saw on the table. One possible rephrasing would be: <b>What did the boy see on the table?</b> </p>
+    <p>Of course, there can be other ways to rephrase it. One can also rephrase the sentence as <b>What was the thing that the boy saw on the table</b>, or <b>What was it that the boy saw on the table</b>. You can also use multiple sentences in your rephrasing if needed.</p>
+    
+   <p> If you are confident that your rephrasing reflects the intended meaning of the target, you should drag the slider bar to the right. If not, drag the slider bar to the left.</p>
     <button onclick="_s.button()">Continue</button>
   </div>
 
   <div class="slide" id="practice_slider_2">
 
-    <p class = "practice_instruction_1_2">Let's try another one. Please read the context sentence and the target sentence very carefully. The target sentence may sound a bit awkward.</p>
-    <p class = "practice_instruction_2_2">Now, think about what the target sentence was intending to ask, and try your best to rephrase it.</p>
+    <p class = "practice_instruction_1_2">Let's try one practice item. Please read the context sentence and the target sentence very carefully. The bolded target sentence may sound a bit awkward.</p>
+    <p class = "practice_instruction_2_2">Now, think about what the bolded sentence is intending to ask, and try your best to rephrase it. Reading context sentence carefully might help you figure out the intended meaning of the question sentence.</p>
     <p class="context_2"> </p>
     <p class="target_2"> </p>
     <button class = "button_1_2" onclick="_s.button_1_2()"></button>
     <p class="rephrase_instruction_1_2">Please try to rephrase the target sentence:</p>
     <textarea  class = "rephrase_box_2" id="rephrase_practice_2_2" rows="3" cols="50" oncopy="return false" onpaste="return false" ></textarea>
-    <p class="rephrase_instruction_2_2">Are you confident that your answer captures what the target sentence intends to mean?</p>
+    <p class="rephrase_instruction_2_2">How confident are you that your rephrasing captures the bolded sentence's intended meaning?</p>
     <table id="slider_table_2" class="slider_table_2">
       <tr><td class="left">Not confident at all</td><td colspan="2"><div id="practice_slider_bar_2" class="slider"></div></td><td class="right">Very confident</td></tr>
     </table>
@@ -134,7 +131,8 @@ $(function(){
     <br>
 
     <p>This target sentence sounds a bit awkward. It is intending to ask who slept under the bridge. One way to rephrase it would be <b>Who slept under the bridge?</b>.</p>
-    <p>Of course, there can be other ways to rephrase it. If you are confident that your rephrasing reflects the intended meaning of the target, you should drag the slider bar to the right. If not, drag the slider bar to the left.</p>
+    <p>Of course, there can be other ways to rephrase it. You can also use multiple sentences in your rephrasing if needed. </p>
+    <p>If you are confident that your rephrasing reflects the intended meaning of the target, you should drag the slider bar to the right. If not, drag the slider bar to the left.</p>
     
     <button onclick="_s.button()">Continue</button>
   </div>
@@ -144,8 +142,8 @@ $(function(){
     <br>
 
     <p>Before we start the experiment, there are a few things to keep in mind:</p>
-    <p>(1) Please make sure you read <b>both</b> the context sentence and the target sentence carefully. If the target sentence sounds awkward, try your best to interpret its intended meaning.</p>
-    <p>(2) Please rephrase <b>only</b> the target sentence by typing into the text box.</p>
+    <p>(1) Please make sure you read <b>both</b> the context sentence and the bolded question sentence carefully. The quesion sentence may sound <b>awkward or even incomprehensible</b>. Try your best to interpret its intended meaning.</p>
+    <p>(2) Please rephrase <b>only</b> the bolded question sentence by typing into the text box.</p>
     <p>(3) Use the slider bar to indicate how confident you are about your rephrasing correctly reflecting the intended meaning of the target sentence.</p>
     <p>When you are ready, please press the button to proceed.</p>
     <button onclick="_s.button()">Click to begin the experiment</button>
@@ -168,10 +166,10 @@ $(function(){
 <p class="context"> </p>
 <p class="target"> </p>
 <button class = "button_1" onclick="_s.button_1()"></button>
-<p class="rephrase_box">Please try to rephrase the target sentence you just saw:
+<p class="rephrase_box">Please try to rephrase the bolded question sentence:
 <textarea  id="rephrase" rows="3" cols="50" oncopy="return false" onpaste="return false" ></textarea>
 </p>
-<p class="rephrase_instruction_2">Are you confident that your answer captures what the target sentence intends to mean?</p>
+<p class="rephrase_instruction_2">How confident are you that your rephrasing captures the bolded sentence's intended meaning?</p>
 <table id="slider_table" class="slider_table">
   <tr><td class="left">Not confident at all</td><td colspan="2"><div id="single_slider" class="slider"></div></td><td class="right">Very confident</td></tr>
 </table>
